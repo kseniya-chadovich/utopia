@@ -56,6 +56,24 @@ func GetPosts(c echo.Context) error {
 	return c.JSON(http.StatusOK, posts)
 }
 
+func UpdatePost(c echo.Context) error {
+	id := c.Param("id")
+	var existingPost models.Post
+	var req models.PostParams
+	if err := db.DB.First(&existingPost, "id = ?", id).Error; err != nil {
+		return c.JSON(http.StatusNotFound, map[string]string{"message": "Post not found"})
+	}
+	existingPost.Content = req.Content
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+	}
+	existingPost.Content = req.Content
+	if err := db.DB.Save(&existingPost).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+	return c.JSON(http.StatusOK, existingPost)
+}
+
 func DeletePost(c echo.Context) error {
 	id := c.Param("id")
 	if db.DB.Where("id = ?", id).Delete(&models.Post{}).RowsAffected == 0 {

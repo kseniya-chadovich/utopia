@@ -24,5 +24,6 @@ func route(e *echo.Echo) {
 	api.DELETE("/users/:id", handlers.DeleteUserById)
 	api.GET("/posts", handlers.GetPosts)
 	api.POST("/posts", handlers.CreatePost)
+	api.PUT("/posts/:id", handlers.UpdatePost) // endpoint for the updatePost func
 	api.DELETE("/posts/:id", handlers.DeletePost)
 }
